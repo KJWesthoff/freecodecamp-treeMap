@@ -90,97 +90,40 @@ fetchData = async () => {
     .attr("font-size", "10px")
     .attr("fill", "white")
 
-  const legend = d3.select('.treemap')
+  // add  a legend
+
+  const lw = 200
+  const lh = 100
+  const legSpace = 100
+
+  const legend = d3.select(".treemap")
     .append('div')
-    .attr("id", "legend")    
-
-//   const heading = chartelem.append('heading');
-//   heading
-//     .append('h2')
-//     .attr('id', 'title')
-//     .text('Land surface temperatures by month')
-
-//   heading
-//     .append('h3')
-//     .attr('id', "description")
-//     .html(
-//       `${minYr} - ${maxYr} temperatures, base avg: ${bt} ${'&#8451'}`  
-//     )
-
-//   const chartarea = chartelem.append('section') 
+    .attr("id", "legend")
+    .append('svg')
+    .attr("width", w )
+    .attr("height", lh )
   
-
+  // select the legend and add items
+  const legedItem = legend.selectAll(".legend-item")
+    .data(categories)
+    .enter()
+    .append("g")
+    .attr("class", "legend-item")
     
-
-//   // svg element for the chart area
-//   const chartsvg = chartarea
-//     .append("svg")
-//     .attr("height", h)
-//     .attr("width",w)
-//     .style("background-color", "aquamarine") 
+  legedItem  
+    .append("rect")
+    .attr("width", 20)
+    .attr("height", 20)
+    .style("fill", d => coMap(categories.indexOf(d)))
+    .attr("x", d => 10 + categories.indexOf(d)*legSpace )
+    .attr("y", 10 )
     
-   
+  legedItem  
+    .append("text")
+    .attr("x", d => 32 + categories.indexOf(d)*legSpace )
+    .attr("y", 25 )
+    .text(d => d)
 
-//   // Both axes are Band scale i.e evenly spaced based on arrays
-//   // Y axis  
-//   // axis scaling
-//   var yScale = d3.scaleBand()  
-//    .domain(months.map(m => m.name)) 
-//    .range([padding,h-padding]);       
-
-//   // plot axes  
-//   const yAxis = d3.axisLeft()
-//     .scale(yScale)
-//     .tickValues(yScale.domain())
-  
-//   console.log(yAxis)
-
-//   chartsvg.append("g")
-//     .classed('y-axis', true)
-//     .attr('id', 'y-axis')
-//     .call(yAxis)
-//     .attr("transform", "translate(" + padding + "," + 0 +" )")
-//     .append('text')
-//     .text("Months")
-//     .style('test-anchor', 'middle')
-//     .attr('transform','translate(' + -9 * 5 + ',' + (h-padding) / 2 + ')' + 'rotate(-90)')
-//     .attr('fill', 'black');
-
-
-//   // X axis
-//   // axis scaling
-//   var xScale = d3.scaleBand()
-//    .domain(arrData.map(d => d.year))
-//    .range([padding, w-padding])
-  
-   
-//   // plot axes
-//   const xAxis = d3.axisBottom()
-//     .scale(xScale)
-//     .ticks(10)
-//     .tickValues(xScale.domain().filter((d,i)=> !(i%10)))
-    
-
-//   chartsvg.append("g")
-//   .classed('x-axis', true)
-//   .attr('id', 'x-axis')
-//   .call(xAxis)
-//   .attr("transform", "translate(" + 0 + "," + (h-padding) + ")")
-//   .append("text")
-//   .text("Year")
-//   .style('test-anchor', 'middle')
-//   .attr('transform','translate(' + w/2 + ',' + padding/2 + ')' )
-//   .attr('fill', 'black');
-
-
-// // legend part, which is also used to bin the colors
-// // find data bounds
-// const minVar = arrData.reduce((prev,curr) => curr.variance < prev.variance ? curr:prev).variance+bt
-// const maxVar = arrData.reduce((prev,curr) => curr.variance > prev.variance ? curr:prev).variance+bt
-
-// // legend size
-// const lw = w/4
-// const lh = 20
 
 // // generate array based on the data range and the number of colors
 // const thDomainFunc = (min,max,count) => {
