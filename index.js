@@ -21,20 +21,42 @@ fetchData = async () => {
 //   //console.log(arrData)
 //   //console.log(minYr,maxYr)
 
-const colormap = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]
-    
+  const colormap = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]
+  const categories = data.children.map(c => c.name)  
+
+  console.log(categories)
+
+  const coMap = d3.scaleLinear()
+    .domain(categories.map((c,i) => i))
+    .range(colormap.slice(0, categories.length))
 
    // main chart
    const w = 800
    const h = 800
    const padding = 30
 
+  const headings = d3.select('.treemap')
+    .append("div")
+    .attr("class" ,"headings")
+  
+  headings
+    .append('h2')
+    .attr('id', 'title')
+    .text(`${data.name}`)
+  
+  headings
+    .append('h3')
+    .attr('id', "description")
+    .text(`By categories: ${categories.join(' ')} `)
+
+
   const svg = d3.select('.treemap')
+    .append("div")
+    .attr("class", "tiles")
     .append('svg')
     .attr("width", w)
     .attr("height",h)
-    
-
+  
   const root = d3.hierarchy(data)
     .sum(d => d.value)
 
@@ -42,7 +64,6 @@ const colormap = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#
 
   d3.treemap()
     .size([w,h])
-    .padding(5)
     .tile(d3.treemapBinary)
     (root)
   
@@ -52,9 +73,13 @@ const colormap = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#
     .attr("x", d => d.x0)  
     .attr("y", d => d.y0)
     .attr("width", d => d.x1-d.x0)
-    .attr("height", d => d.y1-d.y0)  
+    .attr("height", d => d.y1-d.y0)
+    .attr("class", "tile")
+    .attr("data-name", d => d.data.name)
+    .attr("data-value",d => d.data.value)
+    .attr("data-category", d => d.data.category)  
     .style("stroke", "black")
-    .style("fill", "slateblue")
+    .style("fill", d => coMap(categories.indexOf(d.data.category)))
 
   svg.selectAll("text")
     .data(root.leaves())
@@ -64,7 +89,11 @@ const colormap = ["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#
     .text(d => d.data.name)
     .attr("font-size", "10px")
     .attr("fill", "white")
-  
+
+  const legend = d3.select('.treemap')
+    .append('div')
+    .attr("id", "legend")    
+
 //   const heading = chartelem.append('heading');
 //   heading
 //     .append('h2')
