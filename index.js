@@ -80,6 +80,23 @@ fetchData = async () => {
     .attr("data-category", d => d.data.category)  
     .style("stroke", "black")
     .style("fill", d => coMap(categories.indexOf(d.data.category)))
+    .on("mouseover", (e,d) => {return tooltip.style("visibility", "visible");})
+    .on("mousemove", (e,d) => {
+      return tooltip
+            .style("top", (e.pageY-10)+"px")
+            .style("left",(e.pageX+10)+"px")
+            .attr("data-value", d.data.value)
+            .html(`
+              <span> ${d.data.name} </span>
+              </br>
+              <span> ${d.data.category} </span>
+              </br>
+              <span> ${d.data.value} </span>
+            `)
+  
+    })
+  .on("mouseout", (e,d) => {return tooltip.style("visibility", "hidden");});
+
 
   svg.selectAll("text")
     .data(root.leaves())
@@ -98,20 +115,21 @@ fetchData = async () => {
 
   const legend = d3.select(".treemap")
     .append('div')
-    .attr("id", "legend")
     .append('svg')
     .attr("width", w )
     .attr("height", lh )
+    .attr("id", "legend")
   
   // select the legend and add items
   const legedItem = legend.selectAll(".legend-item")
     .data(categories)
     .enter()
     .append("g")
-    .attr("class", "legend-item")
+   
     
   legedItem  
     .append("rect")
+    .attr("class", "legend-item")
     .attr("width", 20)
     .attr("height", 20)
     .style("fill", d => coMap(categories.indexOf(d)))
@@ -125,63 +143,9 @@ fetchData = async () => {
     .text(d => d)
 
 
-// // generate array based on the data range and the number of colors
-// const thDomainFunc = (min,max,count) => {
-//   const arr = [];
-//   const step = (max-min)/count;
-//   for(var i = 1; i<count; i++){
-//     arr.push(min+i*step)
-//   } return arr;
-// }
-
-// const lArrData = thDomainFunc(minVar,maxVar, colormap.length)
-
-
-// //legend thresholds, function to map ranges to colors
-// const thresholds = d3.scaleThreshold()
-//    .domain(lArrData)
-//    .range(colormap)
-
-// // legend axes
-// const lXScale = d3.scaleBand()
-//   .domain(lArrData)
-//   .range([0,lw])
-
-// const lXAxis = d3.axisBottom()
-//   .scale(lXScale)
-//   .tickValues(thresholds.domain())
-//   .tickFormat(d3.format('.1f'));
-
-// const legend = chartsvg //append legend to the chart element
-//   .append('g')
-//   .classed("legend",true)
-//   .attr("id", "legend")
-//   .attr("transform", "translate(" + padding + "," + (h-padding/2) + ")")
-  
-
-// legend
-//   .append('g')
-//   .selectAll('rect')
-//   .data(lArrData)
-//   .enter()
-//   .append('rect')
-//   .style('fill', d => thresholds(d))
-//   .attr('x', d => lXScale(d))
-//   .attr('y', 0)
-//   .attr('height', lh)
-//   .attr('width', lXScale.bandwidth)
-
-
-// legend
-//   .append('g')
-//   .call(lXAxis)
-
-  
-
-
-// var tooltip = d3.selectAll("body")
-//   .append("div")
-//   .attr("id", "tooltip")
+var tooltip = d3.selectAll("body")
+  .append("div")
+  .attr("id", "tooltip")
   
 
 
